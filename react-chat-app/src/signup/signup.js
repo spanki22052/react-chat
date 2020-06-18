@@ -124,10 +124,41 @@ class SignupComponent extends Component {
     e.preventDefault();
     console.log("SUBMITTING! ", this.state);
     console.log(this.formIsValid);
-    this.formIsValid() === true
-      ? console.log("passwords are same")
-      : console.log("Passwords aren't same");
-    };
+    if (this.formIsValid() === false) {
+      this.setState({ signupError: "Passwords aren't same" });
+      return;
+    }
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then(
+        (autRes) => {
+          const userObj = {
+            email: autRes.user.email,
+            password: this.state.password
+          };
+
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(this.state.email)
+            .set(userObj)
+            .then(
+              () => {
+                this.props.history.push("/dashboard");
+              },
+              (dbError) => {
+                console.log(dbError);
+                this.setState({ signupError: "Failed to load user" });
+              }
+            );
+        },
+        (authErr) => {
+          console.log(authErr);
+          this.setState({ signupError: "Failed to add user" });
+        }
+      );
+  };
 }
 
 export default withStyles(styles)(SignupComponent);
