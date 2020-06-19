@@ -38,21 +38,20 @@ class DashboardComponent extends Component {
     this.setState({ newChatFormVisible: true, selectedChat: null });
 
   componentDidMount = () => {
-    firebase.auth().onAuthStateChanged(async (_usr) => {
-      if (!_usr) {
-        this.props.history.push("/login");
-      } else {
+    firebase.auth().onAuthStateChanged(async _usr => {
+      if (!_usr) this.props.history.push("/login");
+      else {
         await firebase
           .firestore()
           .collection("chats")
           .where("users", "array-contains", _usr.email)
-          .onSnapshot(async (res) => {
-            const chats = res.docs.map((_doc) => _doc.data);
+          .onSnapshot(async res => {
+            const chats = res.docs.map((_doc) => _doc.data());
             await this.setState({
               email: _usr.email,
               chats: chats,
             });
-            console.log(this.state);
+            console.log(chats);
           });
       }
     });
