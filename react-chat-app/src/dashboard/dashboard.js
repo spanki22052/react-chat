@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import ChatListComponent from "../chatList/chatList";
-import { useRadioGroup } from "@material-ui/core";
+import { Button, withStyles } from "@material-ui/core";
+import styles from './styles';
+
 const firebase = require("firebase");
 
 class DashboardComponent extends Component {
@@ -15,6 +17,9 @@ class DashboardComponent extends Component {
   }
 
   render() {
+
+    const { classes } = this.props;
+
     return (
       <div>
         <h1>Hello world from dashboard</h1>
@@ -26,6 +31,7 @@ class DashboardComponent extends Component {
           userEmail={this.state.email}
           selectedChatIndex={this.state.selectedChat}
         />
+        <Button className={classes.signOutBtn} onClick={this.signOut}> Sign Out</Button>
       </div>
     );
   }
@@ -33,6 +39,8 @@ class DashboardComponent extends Component {
   selectChat = (chatIndex) => {
     console.log("Selected chat " + chatIndex);
   };
+
+  signOut = () => firebase.auth().signOut()
 
   newChatBtnClicked = () =>
     this.setState({ newChatFormVisible: true, selectedChat: null });
@@ -48,7 +56,7 @@ class DashboardComponent extends Component {
           .onSnapshot(async res => {
             const chats = res.docs.map((_doc) => _doc.data());
             await this.setState({
-              email: _usr.email,
+              email: _usr.email,  
               chats: chats,
             });
             console.log(chats);
@@ -58,4 +66,4 @@ class DashboardComponent extends Component {
   };
 }
 
-export default DashboardComponent;
+export default withStyles(styles)(DashboardComponent);
