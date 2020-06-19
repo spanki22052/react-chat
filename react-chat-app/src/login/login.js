@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import styles from "./styles";
+const firebase = require("firebase");
 
 class LoginComponent extends Component {
   constructor() {
@@ -106,7 +107,22 @@ class LoginComponent extends Component {
 
   submitLogin = (e) => {
     e.preventDefault();
-    console.log(this.state);
+
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(
+        this.state.email,
+        this.state.password
+      )
+      .then(
+        () => {
+          this.props.history.push('/dashboard')
+        },
+        (err) => {
+          this.setState({ loginError: "Server error" });
+          console.log(err)
+        }
+      );
   };
 }
 
