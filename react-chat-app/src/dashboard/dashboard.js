@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import ChatListComponent from "../chatList/chatList";
 import { Button, withStyles } from "@material-ui/core";
-import styles from './styles';
+import ChatViewComponent from "../chatView/chatView";
+import styles from "./styles";
 
 const firebase = require("firebase");
 
@@ -17,49 +18,55 @@ class DashboardComponent extends Component {
   }
 
   render() {
-
     const { classes } = this.props;
 
     return (
       <div>
-        <h1>Hello world from dashboard</h1>
         <ChatListComponent
           history={this.props.history}
           newChatBtnClicked={this.newChatBtnClicked}
-          selectChat={this.selectChat}
+          selectChatFn={this.selectChat}
           chats={this.state.chats}
           userEmail={this.state.email}
           selectedChatIndex={this.state.selectedChat}
         />
-        <Button className={classes.signOutBtn} onClick={this.signOut}> Sign Out</Button>
+        {this.state.newChatFormVisible ? null : (
+          <ChatViewComponent
+            user={this.state.email}
+            chat={this.state.chats[this.state.selectedChat]}
+          />
+        )}
+
+        <Button className={classes.signOutBtn} onClick={this.signOut}>
+          Sign Out
+        </Button>
       </div>
     );
   }
 
   selectChat = (chatIndex) => {
-    console.log("Selected chat " + chatIndex);
+    this.setState({ selectedChat: chatIndex });
   };
 
-  signOut = () => firebase.auth().signOut()
+  signOut = () => firebase.auth().signOut();
 
   newChatBtnClicked = () =>
     this.setState({ newChatFormVisible: true, selectedChat: null });
 
   componentDidMount = () => {
-    firebase.auth().onAuthStateChanged(async _usr => {
+    firebase.auth().onAuthStateChanged(async (_usr) => {
       if (!_usr) this.props.history.push("/login");
       else {
         await firebase
           .firestore()
           .collection("chats")
           .where("users", "array-contains", _usr.email)
-          .onSnapshot(async res => {
+          .onSnapshot(async (res) => {
             const chats = res.docs.map((_doc) => _doc.data());
             await this.setState({
-              email: _usr.email,  
+              email: _usr.email,
               chats: chats,
             });
-            console.log(chats);
           });
       }
     });

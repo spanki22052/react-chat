@@ -19,7 +19,7 @@ class ChatListComponent extends Component {
     const { classes } = this.props;
 
     if (this.props.chats.length > 0) {
-      return(
+      return (
         <main className={classes.root}>
           <Button
             variant="contained"
@@ -27,15 +27,17 @@ class ChatListComponent extends Component {
             color="primary"
             className={classes.newChatBtn}
             onClick={this.newChat}
-          >NEW MESSAGE</Button>
+          >
+            NEW MESSAGE
+          </Button>
           <List>
             {this.props.chats.map((_chat, _index) => {
               return (
-                <div key={_index}>
+                <div key={_index} style={_index === this.props.selectedChatIndex ? {backgroundColor: "#f2f2f2"} : null}>
                   <ListItem
                     onClick={() => this.selectChat(_index)}
                     className={classes.listItem}
-                    selected={this.props.selectedChatIndex === _index}
+                    selected={this.props.selectChatFn === _index}
                     alignItems="flex-start"
                   >
                     <ListItemAvatar>
@@ -53,12 +55,11 @@ class ChatListComponent extends Component {
                       primary={
                         _chat.users
                           .filter((_user) => _user !== this.props.userEmail)[0]
-                          .split("")[0]
+                          .split("@")[0]
                       }
                       secondary={
                         <React.Fragment>
                           <Typography component="span" color="textPrimary">
-                            {" "}
                             {_chat.messages[
                               _chat.messages.length - 1
                             ].message.substring(0, 30)}
@@ -96,7 +97,8 @@ class ChatListComponent extends Component {
   };
 
   selectChat = (index) => {
-    console.log("Selected chat ", index);
+    this.props.selectChatFn(index);
+    console.log('Selected chat ', index)
   };
 }
 
