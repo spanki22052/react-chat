@@ -4,6 +4,14 @@ import { withStyles } from "@material-ui/core";
 import styles from "./styles";
 
 class ChatViewComponent extends Component {
+  componentDidMount = () => {
+    const container = document.getElementById("chatview-container");
+
+    if (container) {
+      container.scrollTo(0, container.scrollHeight);
+    }
+  };
+
   render() {
     const { classes, chat, user } = this.props;
 
@@ -12,8 +20,11 @@ class ChatViewComponent extends Component {
     } else {
       return (
         <div>
-          <div></div>
-          <main className={classes.content}>
+          <div className={classes.chatHeader}>
+            Your conversation with{" "}
+            {chat.users.filter((_usr) => _usr !== user)[0].split("@")[0]}
+          </div>
+          <main id="chatview-container" className={classes.content}>
             {chat.messages.map((_msg, _index) => {
               return (
                 <div
