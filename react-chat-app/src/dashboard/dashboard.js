@@ -4,6 +4,7 @@ import { Button, withStyles } from "@material-ui/core";
 import ChatViewComponent from "../chatView/chatView";
 import ChatTextBoxComponent from "../chattextbox/chattextbox";
 import styles from "./styles";
+import { firestore } from "firebase";
 
 const firebase = require("firebase");
 
@@ -48,8 +49,9 @@ class DashboardComponent extends Component {
     );
   }
 
-  selectChat = (chatIndex) => {
-    this.setState({ selectedChat: chatIndex });
+  selectChat = async (chatIndex) => {
+    await this.setState({ selectedChat: chatIndex });
+    this.messageRead();
   };
 
   buildDocKey = (friend) => [this.state.email, friend].sort().join(":");
@@ -60,7 +62,7 @@ class DashboardComponent extends Component {
         (_usr) => _usr !== this.state.email
       )[0]
     );
-    console.log(this.state.email)
+    console.log(this.state.email);
     firebase
       .firestore()
       .collection("chats")
@@ -80,6 +82,28 @@ class DashboardComponent extends Component {
 
   newChatBtnClicked = () =>
     this.setState({ newChatFormVisible: true, selectedChat: null });
+
+  messageRead = () => {
+    const docKey = this.buildDocKey(
+      this.state.chats[this.state.selectedChat].users.filter(
+        (_usr) => _usr !== this.state.email
+      )[0]
+    );
+    if (this.clickedChatWhereNotSender(this.state.selectedChat)) {
+      firebase
+        .firestore()
+        .collection("chats")
+        .doc(docKey)
+        .update({ ReceiverHasRead: true });
+    } else {
+      console.log("Clicked message where the user was the sender");
+    }
+  };
+
+  clickedChatWhereNotSender = (chatIndex) =>
+    this.state.chats[chatIndex].messages[
+      this.state.chats[chatIndex].messages.length - 1
+    ].sender !== this.state.email;
 
   componentDidMount = () => {
     firebase.auth().onAuthStateChanged(async (_usr) => {

@@ -33,7 +33,14 @@ class ChatListComponent extends Component {
           <List>
             {this.props.chats.map((_chat, _index) => {
               return (
-                <div key={_index} style={_index === this.props.selectedChatIndex ? {backgroundColor: "#f2f2f2"} : null}>
+                <div
+                  key={_index}
+                  style={
+                    _index === this.props.selectedChatIndex
+                      ? { backgroundColor: "#f2f2f2" }
+                      : null
+                  }
+                >
                   <ListItem
                     onClick={() => this.selectChat(_index)}
                     className={classes.listItem}
@@ -67,6 +74,14 @@ class ChatListComponent extends Component {
                         </React.Fragment>
                       }
                     ></ListItemText>
+                    {console.log(_chat)}
+                    {_chat.ReceiverHasRead === false &&
+                    !this.userIsSender(_chat) ? (
+                      <ListItemIcon>
+                        {console.log("there is new icon")}
+                        <NotificationsIcon className={classes.unreadMessage} />
+                      </ListItemIcon>
+                    ) : null}
                   </ListItem>
                   <Divider></Divider>
                 </div>
@@ -98,8 +113,11 @@ class ChatListComponent extends Component {
 
   selectChat = (index) => {
     this.props.selectChatFn(index);
-    console.log('Selected chat ', index)
+    console.log("Selected chat ", index);
   };
+
+  userIsSender = (chat) =>
+    chat.messages[chat.messages.length - 1].sender === this.props.userEmail;
 }
 
 export default withStyles(styles)(ChatListComponent);

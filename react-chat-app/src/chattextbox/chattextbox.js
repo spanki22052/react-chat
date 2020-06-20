@@ -36,7 +36,7 @@ class ChatTextBoxComponent extends Component {
   messageValid = (txt) => txt && txt.replace(/\s/g, "").length;
   submitMessage = () => {
     if (this.messageValid(this.state.chatText)) {
-      this.props.submitMessageFn(this.state.chatText);
+        this.props.submitMessageFn(this.state.chatText)
       document.getElementById("chattextbox").value = "";
     }
   };
