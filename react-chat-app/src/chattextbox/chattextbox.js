@@ -7,8 +7,24 @@ class ChatTextBoxComponent extends Component {
   render() {
     const { classes } = this.props;
 
-    return <div className={classes.ChatTextBoxContainer}>Hello from Chat Box class</div>;
+    return (
+      <div className={classes.chatTextBoxContainer}>
+        <TextField
+          placeholder="Type your message..."
+          id="chattextbox"
+          className={classes.chatTextBox}
+          onFocus={this.userClickedInput}
+          onKeyUp={(e) => this.userTyping(e)}
+        ></TextField>
+      </div>
+    );
   }
+
+  userTyping(e) {
+    console.log(`User typing ${e.target.value}`);
+  }
+
+  userClickedInput = () => console.log("Clicked input")
 }
 
 export default withStyles(styles)(ChatTextBoxComponent);
