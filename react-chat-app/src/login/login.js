@@ -100,6 +100,7 @@ class LoginComponent extends Component {
         break;
       case "password":
         this.setState({ password: e.target.value });
+        break;
       default:
         break;
     }

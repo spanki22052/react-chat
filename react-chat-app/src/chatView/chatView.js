@@ -41,10 +41,6 @@ class ChatViewComponent extends Component {
         </div>
       );
     }
-
-    return (
-      <div className={classes.content}>Hello from chat view component</div>
-    );
   }
 }
 

@@ -4,7 +4,6 @@ import { Button, withStyles } from "@material-ui/core";
 import ChatViewComponent from "../chatView/chatView";
 import ChatTextBoxComponent from "../chattextbox/chattextbox";
 import styles from "./styles";
-import { firestore } from "firebase";
 
 const firebase = require("firebase");
 
