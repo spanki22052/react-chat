@@ -20,6 +20,7 @@ class DashboardComponent extends React.Component {
     };
   }
 
+
   render() {
 
     const { classes } = this.props;
@@ -78,6 +79,9 @@ class DashboardComponent extends React.Component {
 
   newChatBtnClicked = () => this.setState({ newChatFormVisible: true, selectedChat: null });
 
+  getSomeElement = () => {
+    
+  }
   newChatSubmit = async (chatObj) => {
     const docKey = this.buildDocKey(chatObj.sendTo);
     await
